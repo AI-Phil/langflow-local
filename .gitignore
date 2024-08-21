@@ -1,0 +1,6 @@
+pgdata
+nginx_logs
+pgadmin-data
+langflow-data-*
+docker-compose.yaml
+nginx.conf
