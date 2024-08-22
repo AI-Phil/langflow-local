@@ -48,7 +48,7 @@ In the example, we're going to add Langflow v1.0.14 but any image in the [Langfl
 
 ### Add Alias to `hosts` File
 
-First create an entry for your Langflow host aliases in the `hosts` file [how to is here](https://www.hostinger.com/tutorials/how-to-edit-hosts-file):
+First create an entry for your Langflow host aliases in the `hosts` file ([how to is here](https://www.hostinger.com/tutorials/how-to-edit-hosts-file)):
 
 For example, to reference Langflow v1.0.14 as `langflow_1_0_14`, add an entry:
 
@@ -119,7 +119,7 @@ In `nginx.conf` within the `http { }` section add a `server`:
 * `server_name` needs to correspond with the alias you added in the `hosts` file
 * `proxy_pass` is of the format `http://[service_name]:7860`, with the service name being whatever you used in the section above
 
-Back in `docker-compose.yaml`, add a `depends_on` entry for your new service:
+Back in `docker-compose.yaml`, add a `depends_on` to the nginx entry for your new service:
 
 ```yaml
     depends_on:
