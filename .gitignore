@@ -1,6 +1,8 @@
 pgdata
 nginx_logs
 pgadmin-data
+minio-data
 langflow-data-*
 docker-compose.yaml
 nginx.conf
+.env

@@ -71,6 +71,30 @@ services:
   #     - "3000"
   #   networks:
   #     - langflow-network
+  #   environment:
+  #     - MINIO_ENDPOINT=${MINIO_ENDPOINT}
+  #     - MINIO_PORT=${MINIO_PORT}
+  #     - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+  #     - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+  #     - MINIO_BUCKET=${MINIO_BUCKET}
+
+  # Use MinIO if you want an S3-compatible object storage service
+  # minio:
+  #   image: minio/minio
+  #   container_name: minio
+  #   environment:
+  #     MINIO_ROOT_USER: minioadmin
+  #     MINIO_ROOT_PASSWORD: minioadmin
+  #   command: server /data --console-address ":9001"
+  #   volumes:
+  #     - ./minio-data:/data
+  #   networks:
+  #     - langflow-network
+  #   expose:
+  #     - "9000"       # API service
+  #   ports:
+  #     - "9001:9001"  # MinIO console
+
   # Nginx provides a common entry point and routing mechanism 
   nginx:
     image: nginx:stable-alpine

@@ -182,3 +182,15 @@ docker rm -f nginx_proxy
 docker compose up -d
 ```
 
+### Object Store
+
+Some flows might want to ingest documents from a URL, rather than upload directly into the API. Certainly one could use an 
+object store provided by an external provider, but `example.docker-compose.yaml` includes MinIO which is an open source, 
+S3-compatible object store. Include this in your own `docker-compose.yaml`, re-launch `docker compose up -d`, and then: 
+
+1. Navigate to [http://localhost:9001/](http://localhost:9001/) and login with the admin credentials you used in the Docker config.
+2. Create a bucket, for example named `demo-bucket`.
+3. Create an Access Key, which will have a key name and secret which you should note.
+   - Download the `credentials.json` if you'd like, it also contains the key name and secret.
+4. Browse the bucket and upload a file to the bucket.
+
