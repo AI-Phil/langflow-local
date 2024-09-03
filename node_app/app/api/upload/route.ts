@@ -20,22 +20,22 @@ function getMinioClient() {
   return minioClient;
 }
 
-export async function POST(req: NextRequest) {
-  try {
-    const { file, fileName } = await req.json();
+// Use pre-signed URL 
+export async function GET(req: NextRequest) {
+    try {
+      const fileName = req.nextUrl.searchParams.get('fileName');
+  
+      if (!fileName) {
+        return NextResponse.json({ error: 'File name is required' }, { status: 400 });
+      }
 
-    // Convert the base64 string back to a buffer
-    const buffer = Buffer.from(file, 'base64');
+      const client = getMinioClient();
 
-    // Get the MinIO client instance
-    const client = getMinioClient();
-
-    // Use the original file name for storage
-    await client.putObject(process.env.MINIO_BUCKET!, fileName, buffer);
-
-    return NextResponse.json({ message: 'File uploaded successfully', fileName });
-  } catch (error) {
-    console.error('Upload error:', error);
-    return NextResponse.json({ error: 'File upload failed' }, { status: 500 });
-  }
+      const presignedUrl = await client.presignedPutObject(process.env.MINIO_BUCKET!, fileName, 60);
+  
+      return NextResponse.json({ url: presignedUrl });
+    } catch (error) {
+      console.error('Error generating presigned URL:', error);
+      return NextResponse.json({ error: 'Failed to generate presigned URL' }, { status: 500 });
+    }
 }

@@ -11,6 +11,8 @@ Langflow environment.
 
 * This is a general-purpose guide, provided under the [MIT License](LICENSE.md). You 
 should take this as an instructive starting point for your own implementation.
+* These instructions have been written for purposes of local development and demonstration, 
+and are *not* intended for direct use in a production environment. 
 
 ## Pre-Requisites
 

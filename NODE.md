@@ -1,5 +1,13 @@
 # Node Server
 
+## Limitations and Indemnification
+
+* This is a general-purpose guide, provided under the [MIT License](LICENSE.md). You 
+should take this as an instructive starting point for your own implementation.
+* These instructions have been written for purposes of local development and demonstration, 
+and are *not* intended for direct use in a production environment. 
+
+
 ## Setup
 
 This repository has a `node_app` subdirectory that has [Next.js](https://nextjs.org) installed into [Node.js](https://nodejs.org).

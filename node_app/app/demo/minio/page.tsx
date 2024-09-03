@@ -15,25 +15,26 @@ export default function MinioUpload() {
   const handleUpload = async () => {
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = async () => {
-      const base64data = reader.result?.toString().split(',')[1];
+    // Step 1: Request a pre-signed URL from the backend
+    const presignedUrlResponse = await fetch(`/api/upload?fileName=${encodeURIComponent(file.name)}`);
+    const { url } = await presignedUrlResponse.json();
 
-      if (base64data) {
-        const response = await fetch('/api/upload', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            file: base64data,
-            fileName: file.name, // Send the original file name
-          }),
-        });
+    if (!url) {
+      setMessage('Failed to get pre-signed URL');
+      return;
+    }
 
-        const result = await response.json();
-        setMessage(result.message || 'Upload failed');
-      }
-    };
+    // Step 2: Upload the file directly to MinIO using the pre-signed URL
+    const uploadResponse = await fetch(url, {
+      method: 'PUT',
+      body: file,
+    });
+
+    if (uploadResponse.ok) {
+      setMessage('File uploaded successfully');
+    } else {
+      setMessage('File upload failed');
+    }
   };
 
   return (
