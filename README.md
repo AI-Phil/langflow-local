@@ -44,26 +44,26 @@ In which case you're ready to go!
 
 ## Adding a Langflow Version
 
-In the example, we're going to add Langflow v1.0.14 but any image in the [Langflow Docker Hub](https://hub.docker.com/r/langflowai/langflow) should work.
+In the example, we're going to add Langflow v1.0.17 but any image in the [Langflow Docker Hub](https://hub.docker.com/r/langflowai/langflow) should work.
 
 ### Add Alias to `hosts` File
 
 First create an entry for your Langflow host aliases in the `hosts` file ([how to is here](https://www.hostinger.com/tutorials/how-to-edit-hosts-file)):
 
-For example, to reference Langflow v1.0.14 as `langflow_1_0_14`, add an entry:
+For example, to reference Langflow v1.0.17 as `langflow-1-0-17`, add an entry:
 
 ```
-127.0.0.1 langflow_1_0_14
+127.0.0.1 langflow-1-0-17
 ```
 
 ### Add Postgres User and Database
 
 A helper script is provided to add a Postgres user and database; you want one of these per Langflow version to keep them isolated from each other:
 
-Here we will create a database user `langflow_1_0_14` with password `langflow`, and make this user the owner of a database `db_1_0_14`:
+Here we will create a database user `langflow_1_0_17` with password `langflow`, and make this user the owner of a database `db_1_0_17`:
 
 ```bash
-docker exec -it postgres_db bash /postgres-user.sh -m add -u langflow_1_0_14 -p langflow -d db_1_0_14
+docker exec -it postgres_db bash /postgres-user.sh -m add -u langflow_1_0_17 -p langflow -d db_1_0_17
 ```
 
 ### Add Langflow Container to `docker-compose.yaml`
@@ -71,42 +71,42 @@ docker exec -it postgres_db bash /postgres-user.sh -m add -u langflow_1_0_14 -p 
 Within the `services:` add a new service for our Langflow version, similar to:
 
 ```yaml
-  langflow_1_0_14:
-    image: langflowai/langflow:1.0.14
+  langflow-1-0-17:
+    image: langflowai/langflow:1.0.17
     environment:
-      LANGFLOW_DATABASE_URL: postgres://langflow_1_0_14:langflow@postgres_db:5432/db_1_0_14
+      LANGFLOW_DATABASE_URL: postgres://langflow_1_0_17:langflow@postgres_db:5432/db_1_0_17
       LANGFLOW_LOG_LEVEL: critical
     networks:
       - langflow-network
     expose:
       - "7860"
     volumes:
-      # Mounting local directory langflow-data-1.0.14 facilitates restarts and container deletion
-      - ./langflow-data-1.0.14:/app/langflow
+      # Mounting local directory langflow-data-1.0.17 facilitates restarts and container deletion
+      - ./langflow-data-1.0.17:/app/langflow
     depends_on:
       - postgres
 ```
 
-* The service name is `langflow_1_0_14`
+* The service name is `langflow-1-0-17`
 * `image` corresponds to the Langflow Docker image tag
 * `LANGFLOW_DATABASE_URL` is in the format `postgres://[username]:[password]@postgres_db:5432/[database]`, with these being the `-u`, `-p`, and `-d` parameters you used above
-* You need to mount a `volume` that corresponds with a local directory (e.g. `langflow-data-1.0.14`) unique to this service name
+* You need to mount a `volume` that corresponds with a local directory (e.g. `langflow-data-1.0.17`) unique to this service name
 
 Note that the exposed port `7860` is available within the Docker network (named `langflow-network`) but not directly exposed to the Docker host.
 
 ### Add Nginx Alias and Route
 
-Next we want to be able to route requests to `langflow_1_0_14` to the service we've just defined (also named `langflow_1_0_14`).
+Next we want to be able to route requests to `langflow-1-0-17` to the service we've just defined (also named `langflow-1-0-17`).
 In `nginx.conf` within the `http { }` section add a `server`:
 
 ```
     server {
         listen 7860;
 
-        server_name langflow_1_0_14;
+        server_name langflow-1-0-17;
 
         location / {
-            proxy_pass http://langflow_1_0_14:7860;
+            proxy_pass http://langflow-1-0-17:7860;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -123,7 +123,7 @@ Back in `docker-compose.yaml`, add a `depends_on` to the nginx entry for your ne
 
 ```yaml
     depends_on:
-      - langflow_1_0_14
+      - langflow-1-0-17
 ```
 
 ### Launch Docker Containers
@@ -137,14 +137,10 @@ docker compose up -d
 And you can follow the logs of the new container. It will eventually have the familiar banner:
 
 ```
-Starting Langflow v1.0.14...
+Starting Langflow v1.0.17...
 ╭───────────────────────────────────────────────────────────────────╮
 │ Welcome to ⛓ Langflow                                             │
 │                                                                   │
-│                                                                   │
-│ A new version of langflow is available: 1.0.15                    │
-│                                                                   │
-│ Run 'pip install langflow -U' to update.                          │
 │                                                                   │
 │ Collaborate, and contribute at our GitHub Repo 🌟                 │
 │                                                                   │
@@ -157,7 +153,7 @@ Starting Langflow v1.0.14...
 
 ### Test it Out!
 
-Once everything is in place, you should be able to access the Langflow UI for this new version, in our example [http://langflow_1_0_14:7860](http://langflow_1_0_14:7860/).
+Once everything is in place, you should be able to access the Langflow UI for this new version, in our example [http://langflow-1-0-17:7860](http://langflow-1-0-17:7860/).
 
 ## Troubleshooting
 
@@ -166,7 +162,7 @@ Once everything is in place, you should be able to access the Langflow UI for th
 Langflow container log stuck on 
 
 ```
-2024-08-21 16:24:49 Starting Langflow v1.0.14...
+2024-08-21 16:24:49 Starting Langflow v1.0.17...
 ```
 
 * Did you create a Postgres user and database?
